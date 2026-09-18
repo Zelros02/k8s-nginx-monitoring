@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-prometheus-exporter
+  namespace: default
+  labels:
+    app: nginx-prometheus-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-prometheus-exporter
+  template:
+    metadata:
+      labels:
+        app: nginx-prometheus-exporter
+    spec:
+      containers:
+        - name: exporter
+          image: nginx/nginx-prometheus-exporter:1.3.0
+          args:
+            - "-nginx.scrape-uri=http://nginx:8080/metrics"
+          ports:
+            - name: metrics
+              containerPort: 9113
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9113
+            initialDelaySeconds: 2
+            periodSeconds: 5

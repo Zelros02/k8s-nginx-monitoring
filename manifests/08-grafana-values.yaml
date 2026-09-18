@@ -1,0 +1,50 @@
+# Helm values for grafana/grafana
+# Installed into the `monitoring` namespace.
+#
+# Provisions:
+#   - the Prometheus datasource (same namespace, so service name is enough)
+#   - the official nginx-prometheus-exporter dashboard from Grafana.com (id 12708)
+
+service:
+  type: ClusterIP
+  port: 80
+
+adminUser: admin
+# No adminPassword here on purpose: the chart generates a random one and stores
+# it in the `grafana` Secret. Retrieve it with:
+#   kubectl -n monitoring get secret grafana -o jsonpath='{.data.admin-password}' | base64 -d
+
+persistence:
+  enabled: false
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-server
+        access: proxy
+        isDefault: true
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+dashboards:
+  default:
+    nginx:
+      # Official "NGINX Prometheus Exporter" dashboard:
+      # https://grafana.com/grafana/dashboards/12708
+      gnetId: 12708
+      revision: 1
+      datasource: Prometheus

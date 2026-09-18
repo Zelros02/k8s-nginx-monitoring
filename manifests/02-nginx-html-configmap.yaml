@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-html
+  namespace: default
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>nginx — monitored workload</title>
+      <style>
+        body { font-family: system-ui, sans-serif; max-width: 720px; margin: 4em auto; padding: 0 1em; }
+        code { background: #f3f3f3; padding: 0 .25em; border-radius: 3px; }
+      </style>
+    </head>
+    <body>
+      <h1>nginx — monitored workload</h1>
+      <p>Served by <code>nginx</code> on port <strong>80</strong>.</p>
+      <p>Metrics (<code>stub_status</code>) on port <strong>8080</strong> at
+         <code>/metrics</code>, scraped by nginx-prometheus-exporter.</p>
+    </body>
+    </html>

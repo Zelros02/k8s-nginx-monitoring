@@ -1,0 +1,6 @@
+# slowhttptest output
+reports/*.html
+reports/*.csv
+
+# OS
+.DS_Store

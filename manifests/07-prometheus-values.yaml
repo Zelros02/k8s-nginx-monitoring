@@ -1,0 +1,30 @@
+# Helm values for prometheus-community/prometheus
+# Installed into the `monitoring` namespace.
+#
+# Adds a static scrape job for the nginx-prometheus-exporter that lives in the
+# `default` namespace and is reachable via its Service FQDN.
+
+server:
+  service:
+    type: ClusterIP
+    servicePort: 80
+
+  persistentVolume:
+    enabled: false
+
+alertmanager:
+  enabled: false
+
+prometheus-pushgateway:
+  enabled: false
+
+# Add a scrape job for our exporter. Prometheus DNS-resolves the FQDN inside
+# the cluster: promexporter.default.svc.cluster.local:9113
+extraScrapeConfigs: |
+  - job_name: 'nginx'
+    static_configs:
+      - targets:
+          - promexporter.default.svc.cluster.local:9113
+        labels:
+          service: nginx
+          source: stub_status
